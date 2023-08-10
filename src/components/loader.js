@@ -1,4 +1,6 @@
-export function removeLoader() {
+
+
+export function removeLoader(){
   const loader = document.querySelector('#loader');
   const header = document.querySelector('header');
   const container = document.querySelector('#content');
@@ -8,7 +10,7 @@ export function removeLoader() {
   container.classList.remove('hidden');
 }
 
-export function addLoader() {
+export function addLoader(){
   const loader = document.querySelector('#loader');
   const header = document.querySelector('header');
   const container = document.querySelector('#content');
@@ -17,3 +19,4 @@ export function addLoader() {
   header.classList.add('z-[-1]');
   container.classList.add('hidden');
 }
+
