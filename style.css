@@ -9,6 +9,7 @@ body {
   flex-wrap: wrap;
   margin-left: 10px;
   margin-top: 10px;
+  box-shadow: 0 0 2px 0 rgba(145,158,171,.2), 0 12px 24px -4px rgba(145,158,171,.12);
 }
 
 h1 {
@@ -20,10 +21,20 @@ h1 {
   
 }
 
+h2 {
+  text-align: left;
+  font-size: 25px;
+
+  margin-bottom: 6px;
+  margin-left: 40px;
+  color: #000000;
+  
+}
 .events .event {
   width: 300px;
-  border: 1px solid #ebf1f6;
-  box-shadow: 0 0 2px 0 rgba(145,158,171,.2), 0 12px 24px -4px rgba(145,158,171,.12);
+  border: 2px solid whitesmoke;
+  box-shadow: #130701;
+ /* box-shadow: 0 0 2px 0 rgba(145,158,171,.2), 0 12px 24px -4px rgba(145,158,171,.12);*/
 }
 
 .event-title {
@@ -66,14 +77,23 @@ h1 {
 }
 
 .add-btn {
-  background-color: #de411b;
+  background-color: white;
 }
 
 .add-to-cart-btn {
   background: #de411b;
   margin: 22px auto;
   display: block;
-  width: 100%;
+  width: 70%;
+  color: #fff; 
+}
+.view-events-btn{
+  background: #de411b;
+  margin: 22px auto;
+  display: block;
+  width: 50%;
+  color: #fff;
+  border-radius: 10px;
 }
 
 .main-content-component {
@@ -92,5 +112,202 @@ h1 {
   font-weight: bold;
   box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2), 0 6px 20px 0 rgba(0,0,0,0.19);
   border-radius: 10px;
+}
 
+
+.btn2 {
+  background-color: #130701; /* Green */
+  border: none;
+  color: white;
+  padding: 10px 25px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 14px;
+  font-weight: bold;
+  box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2), 0 6px 20px 0 rgba(0,0,0,0.19);
+  border-radius: 10px;
+}
+
+
+
+
+/* Modal styles */
+.edit-modal{
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0,0,0,0.7);
+  position: absolute;
+  top: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  display: none;
+}
+
+.modal-content{
+  width: 350px;
+  height: 300px;
+  border: 2px solid black;
+  background-color: white;
+  border-radius: 10px;
+  box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2), 0 6px 20px 0 rgba(0,0,0,0.19);
+  border-radius: 10px;
+
+}
+
+.orderID{
+  text-align: center;
+  font-size: 20px;
+  margin-top: 1px;
+  font-weight: bold;
+}
+
+.eventName{
+  margin-left: 10px;
+  font-weight: bold;
+}
+
+
+/*Home css*/
+.home-page {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background-color: black; /* Fallback color if image fails to load */
+}
+
+.bg-image {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0.8; /* Adjust opacity as needed */
+}
+
+.evDescription {
+  text-align: center;
+  font-size:15px;
+  color: #fff;
+  z-index: 1;
+  margin-left: 200px;
+  margin-right: 200px;
+}
+
+.evDdescription h1 {
+  font-size: 40px;
+  margin-bottom: 100px;
+}
+
+/*
+.btn {
+  display: inline-block;
+  padding: 12px 24px;
+  background-color: #de411b;
+  color: #fff;
+  text-decoration: none;
+  border-radius: 8px;
+  font-weight: bold;
+  transition: background-color 0.3s ease;
+}*/
+
+.btn:hover {
+  background-color: #dc2626;
+}
+
+/*Navbar css*/
+.navbar {
+  background-color: rgba(255, 255, 255, 1); /* Set your desired background color */
+  transition: background-color 0.3s ease; /* Add smooth transition effect */
+}
+
+.navbar-scrolled {
+  background-color: rgba(255, 255, 255, 0.9); /* Set the desired background color when scrolled */
+}
+
+.filter-bar {
+  display: flex;
+  align-items: center;
+  background-color: #f5f5f5;
+  padding: 10px 20px;
+}
+
+.filter-dropdown {
+  position: relative;
+  margin-right: 15px;
+}
+.dropdown-button-type{
+  background-color: white;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  padding: 8px 16px;
+  font-size: 14px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+}
+.dropdown-button-venue{
+  background-color: white;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  padding: 8px 16px;
+  font-size: 14px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+}
+
+
+.dropdown-button {
+  background-color: white;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  padding: 8px 16px;
+  font-size: 14px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+}
+
+.badge {
+  background-color: #007bff;
+  color: white;
+  border-radius: 50%;
+  font-size: 12px;
+  width: 20px;
+  height: 20px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-left: 8px;
+}
+
+.dropdown-content {
+  display: none;
+  position: absolute;
+  background-color: white;
+  border: 1px solid #ccc;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+  border-radius: 4px;
+  padding: 10px;
+  width: 200px;
+  z-index: 1;
+}
+
+.filter-dropdown:hover .dropdown-content {
+  display: block;
+}
+
+.more-filters-button,
+.reset-filters-button {
+  background-color: #f5f5f5;
+  color: black;
+  border: none;
+  border-radius: 4px;
+  padding: 8px 16px;
+  font-size: 14px;
+  cursor: pointer;
+  margin-left: auto;
+  border: 1px solid #ccc;
 }

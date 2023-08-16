@@ -9,7 +9,8 @@
 
 		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" /> 
 
-	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" integrity="sha384-rwCwBsFf+QbWt3Z2xR26M6fySt4UCfWd0U0D5jvcUdOVDtbevB27LZ5OxkX72F6T" crossorigin="anonymous">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" crossorigin="anonymous">
+	<script src="https://kit.fontawesome.com/ab96553f10.js" crossorigin="anonymous"></script>
 
 
 
@@ -18,9 +19,9 @@
 </head>
 <body>
 		<header id="page-header">
-			<nav class="container mx-auto px-4 py-2 flex items-center justify-between">
+			<nav class="container mx-auto px-1 py-1 flex items-center justify-between">
 				<div>
-					<a href="/" aria-label="Go to home page" class="text-white font-bold text-2xl">
+					<a href="/home" aria-label="Go to home page" class="text-white font-bold text-2xl">
 						<img class="logo" src="./src/assets/logo.png" alt="app logo">
 					</a>
 				</div>
@@ -28,9 +29,17 @@
 					<ul class="flex space-x-4">
 						<li>
 							<a
-								href="/"
+								href="/home"
 								class="text-white hover:text-black text-lg font-bold link-item"
 								>Home</a
+							>
+						</li>
+
+						<li>
+							<a
+								href="/events"
+								class="text-white hover:text-black text-lg font-bold link-item"
+								>Events</a
 							>
 						</li>
 						<li>
@@ -40,8 +49,35 @@
 								>Orders</a
 							>
 						</li>
+						
 					</ul>
 				</div>
+				<div class="flex md:order-2">
+					<button type="button" data-collapse-toggle="navbar-search" aria-controls="navbar-search" aria-expanded="false" class="md:hidden text-gray-500 light:text-gray-400 hover:bg-gray-100 light:hover:bg-gray-700 focus:outline-none focus:ring-4 focus:ring-gray-200 light:focus:ring-gray-700 rounded-lg text-sm p-2.5 mr-1" >
+						<svg class="w-5 h-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
+							<path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"/>
+						</svg>
+						<span class="sr-only">Search</span>
+					</button>
+					<div class="relative hidden md:block">
+						<div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+							<svg class="w-4 h-4 text-gray-500 dark:text-gray-400 hidden" id="search-icon" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
+								<path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"/>
+							</svg>
+							<span class="sr-only">Search icon</span>
+						</div>
+						<input type="text" id="search-navbar" class="search-navbar block w-full p-3 pl-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-white-50 focus:ring-red-500 focus:border-red-500 light:bg-red-700 light:border-gray-600 dark:placeholder-gray-400 light:text-black dark:focus:ring-red-500 light:focus:border-red-500 hidden" placeholder="Search for events...">
+					</div>
+					<!--<button data-collapse-toggle="navbar-search" type="button" class="inline-flex items-center p-2 w-10 h-10 justify-center text-sm text-gray-500 rounded-lg md:hidden hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200 dark:text-gray-400 dark:hover:bg-gray-700 dark:focus:ring-gray-600" aria-controls="navbar-search" aria-expanded="false">
+							<span class="sr-only">Open main menu</span>
+							<svg class="w-5 h-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 17 14">
+									<path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M1 1h15M1 7h15M1 13h15"/>
+							</svg>
+					</button>-->
+				</div>
+
+
+
 				<div class="w-16 flex justify-end pr-2">
 					<div class="md:hidden">
 						<button
@@ -72,17 +108,23 @@
 				</ul>
 			</div>
 		</header>
-		<div id="loader" 
-		     class="opacity-100 fixed top-2/4 ledt-1/2 -translate-x-1/2 translate-y-1/2"
-		>
-		<i class="fa-solid fa-fish fa-shake fa-xs"></i>
+		
+		<div id="loader" class="opacity-100 fixed top-2/4 translate-x-1/2 translate-y-1/2 flex">
+			<i class="fa-solid fa-fish fa-flip fa-2xl content-center" style="color: #1d54b4;"></i>
+		</div> 
+
+		<main class="main-content-component" id="main-content">
+		</main>
+
+		<div class="edit-modal">
+			<div class="modal-content">
+				<p>Something</p>
+			</div>
 		</div>
 
-
-		<main class="main-content-component">
-		</main>
 		<script type="module" src="./main.js"></script>
 	  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+		
 
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js" ></script> 
 </body>
