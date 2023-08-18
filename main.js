@@ -7,13 +7,6 @@ import { OrderRenderer } from "./src/components/orderRenderer.js";
 
 const navbar = document.querySelector('.navbar');
 
-window.addEventListener('scroll', () => {
-  if (window.scrollY > 100) { // Adjust the threshold as needed
-    navbar.classList.add('navbar-scrolled');
-  } else {
-    navbar.classList.remove('navbar-scrolled');
-  }
-}); 
 
 // Navigate to a specific URL
 function navigateTo(url) {
@@ -28,32 +21,34 @@ function getEventsPageTemplate() {
       <h2 class="eventHead">Events</h2>
       <hr class="shadow-xl">
       <section class="filter-bar">
+
       <div class="filter-dropdown">
-      <button class="dropdown-button-venue">Venue</button>
-      <select id="dropdown-content-venue" class="dropdown-content">
-        <!-- Dropdown options will be added here -->
-      </select>
-    </div>
-    
-    <div class="filter-dropdown">
-      <button class="dropdown-button-type">Ticket Type</button>
-      <select id="dropdown-content-type" class="dropdown-content">
-        <!-- Dropdown options will be added here -->
-      </select>
-    </div>
-      
+        <button class="dropdown-button-venue" id="venue-dropdown-button">Venues<span class="badge hidden-badge" id="venue-badge"></span></button>
+        <div class="dropdown-content" id="venue-dropdown-content">
+          <!-- Checkboxes will be added here dynamically -->
+        </div>
+      </div>
 
-          <!-- Other filter dropdowns here -->
+      <div class="filter-dropdown">
+      <button class="dropdown-button-type" id="type-dropdown-button">Types<span class="badge hidden-badge" id="type-badge"></span></button>
+      <div class="dropdown-content" id="type-dropdown-content">
+        <!-- Checkboxes will be added here dynamically -->
+      </div>
+    </div>
 
-      <button class="reset-filters-button">Șterge toate filtrele</button>
-    </section>
-    <hr class="shadow-xl">
+        <!-- Other filter dropdowns here -->
+
+        <button class="reset-filters-button">Clear all filters</button>
+      </section>
+
+      <hr class="shadow-xl">
 
       <div class="events flex items-center justify-center flex-wrap shadow-amber-500">
       </div>
     </div>
   `;
 }
+
 function getHomePageTemplate() {
   return `
    <div id="content" class="home-page">
@@ -143,16 +138,16 @@ function setupInitialPage() {
 async function renderEventsPage() {
   const mainContentDiv = document.querySelector('.main-content-component');
   mainContentDiv.innerHTML = getEventsPageTemplate();
-  //addLoader();
+  addLoader();
   await EventRenderer.fetchTicketEvents()
   .then((data) => {
+
 
     setTimeout(() => {
       removeLoader();
     }, 500);
-   // console.log('data', data);
+    EventRenderer.dropdownSetup(data);
     EventRenderer.renderEvents(data);
-
   });
 }
 

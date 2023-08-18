@@ -209,7 +209,7 @@ export class OrderRenderer{
     console.log(ticketType, quantity);
 
     if(parseInt(quantity)) {
-      //addLoader();
+      addLoader();
       fetch('http://localhost:8080/api/editOrder', {
         method: 'POST',
         headers: {
@@ -230,6 +230,7 @@ export class OrderRenderer{
         });
       }).then((data) => {
         addPurchase(data);
+
         console.log("Done!");
         input.value = 0;
         document.querySelector('.edit-modal').style.display = 'none';
@@ -238,20 +239,20 @@ export class OrderRenderer{
       .catch((error) => {
         toastr.error(`Something went wrong! ${error}`);
       })
-     /* .finally(() => {
+      .finally(() => {
         setTimeout(() => {
           removeLoader();
         }, 500);
-      });*/
+      });
   
     }else{
-      //not integer
+      toastr.error(`Please introduce a number!`);
     }
   }
 
 
   static handleDeleteButton(orderID) {
-    console.log("in delete");
+    addLoader();
     fetch(`http://localhost:8080/api/deleteOrder/${orderID}`, {
       method: 'DELETE',
       headers: {
@@ -265,7 +266,6 @@ export class OrderRenderer{
     }).then((data) => {
       console.log('data', data);
       if (data) {
-      //  addLoader();
         const order = document.querySelector(`.order-${orderID}`);
         if (order) {
           order.remove();
@@ -281,7 +281,7 @@ export class OrderRenderer{
       toastr.error('Something went wrong!');
     }).finally(() => {
       setTimeout(() => {
-      //  removeLoader();
+        removeLoader();
       }, 500);
     });
   }

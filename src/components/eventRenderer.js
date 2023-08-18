@@ -8,7 +8,6 @@ export class EventRenderer {
     searchText.classList.remove('hidden');
     const searchIcon = document.querySelector('#search-icon');
     searchIcon.classList.remove('hidden');
-    this.dropdownSetup(events);
     
     const eventsDiv = document.querySelector('.events');
     eventsDiv.innerHTML = 'No events found';
@@ -19,60 +18,214 @@ export class EventRenderer {
       });
     }
   }
-  static dropdownSetup(events) {
-    const venuesDropdown = document.querySelector('#dropdown-content-venue');
-    const typesDropdown = document.querySelector('#dropdown-content-type');
-    //const venueDropdown = document.querySelector(".dropdown-button-venue");
-    //const typeDropdown = document.querySelector(".dropdown-button-type");
-    
-  
-    if (!venuesDropdown || !typesDropdown) {
-      console.error("Dropdown elements not found.");
-      return;
-    }
-  
-    venuesDropdown.innerHTML = '';
-    typesDropdown.innerHTML = '';
-  
-    if (events.length === 0) {
-      venuesDropdown.innerHTML = '<option disabled>No venue found</option>';
-      typesDropdown.innerHTML = '<option disabled>No ticket type found</option>';
-      return;
-    }
-  
+  static async dropdownSetup(events) {
     const uniqueVenues = new Set();
     const uniqueEventTypes = new Set();
-  
+
     events.forEach((event) => {
       uniqueVenues.add(event.venue.location);
-      
       uniqueEventTypes.add(event.eventType.eventTypeName);
     });
-    uniqueVenues.forEach((venue) => {
-      const venueOption = EventRenderer.createOptionElement(venue);
-      venuesDropdown.appendChild(venueOption);
-    });
-    console.log(uniqueVenues.length);
-    //venuesDropdown.appendChild(`<span class="badge">${uniqueVenues.length}</span>`);
-    //typesDropdown.appendChild(`<span class="badge">${uniqueEventTypes.length}</span>`);
+    
+    const venueDropdownButton = document.getElementById('venue-dropdown-button');
+    const venueDropdownContent = document.getElementById('venue-dropdown-content');
 
+    const typeDropdownButton = document.getElementById('type-dropdown-button');
+    const typeDropdownContent = document.getElementById('type-dropdown-content');
+
+    const venueBadge = document.getElementById('venue-badge');
+    const typeBadge = document.getElementById('type-badge');
+  
+    if (!venueDropdownButton || !venueDropdownContent) {
+      console.error("Venue dropdown elements not found.");
+      return;
+    }
+
+    if (!typeDropdownButton || !typeDropdownContent) {
+      console.error("Type dropdown elements not found.");
+      return;
+    }
+    // Clear existing checkboxes before appending new ones
+    venueDropdownContent.innerHTML = '';
+    typeDropdownContent.innerHTML = '';
+  
+    let selectedVenues = []//Array.from(venueDropdownContent.querySelectorAll('.checkbox:checked')).map(checkbox => checkbox.value);
+    let selectedTypes = []//Array.from(typeDropdownContent.querySelectorAll('.checkbox:checked')).map(checkbox => checkbox.value);
+
+    venueDropdownContent.addEventListener('click', async (event) => {
+      if (event.target.classList.contains('checkbox')) {
+        const checkbox = event.target;
+        const venue = checkbox.value;
+
+        if (checkbox.checked) {
+          selectedVenues.push(venue);
+        } else {
+          const index = selectedVenues.indexOf(venue);
+          if (index !== -1) {
+            selectedVenues.splice(index, 1);
+          }
+        }
+        
+        venueBadge.textContent = selectedVenues.length;
+        venueBadge.classList.toggle('hidden-badge', selectedVenues.length === 0);
+        this.updateFiltersAndRender(selectedVenues, selectedTypes);
+      }
+    });
+    
+    typeDropdownContent.addEventListener('click', async (event) => {
+      if (event.target.classList.contains('checkbox')) {
+        const checkbox = event.target;
+        const type = checkbox.value;
+
+        if (checkbox.checked) {
+          selectedTypes.push(type);
+        } else {
+          const index = selectedTypes.indexOf(type);
+          if (index !== -1) {
+            selectedTypes.splice(index, 1);
+          }
+        }
+        typeBadge.textContent = selectedTypes.length;
+        typeBadge.classList.toggle('hidden-badge', selectedTypes.length === 0);
+        
+        this.updateFiltersAndRender(selectedVenues, selectedTypes);
+      }
+    });
+    uniqueVenues.forEach((venue) => {
+      const checkbox = this.createCheckboxElement(venue);
+      if (selectedVenues.includes(venue)) {
+        checkbox.querySelector('.checkbox').checked = true;
+      }
+      venueDropdownContent.appendChild(checkbox);
+    });
   
     uniqueEventTypes.forEach((type) => {
-      const typeOption = EventRenderer.createOptionElement(type);
-      typesDropdown.appendChild(typeOption);
+      const checkbox = this.createCheckboxElement(type);
+      if (selectedTypes.includes(type)) {
+        checkbox.querySelector('.checkbox').checked = true;
+      }
+      typeDropdownContent.appendChild(checkbox);
+    });
+  
+    const closeDropdowns = () => {
+      venueDropdownContent.classList.remove('open');
+      typeDropdownContent.classList.remove('open');
+      venueBadge.classList.remove('hidden-badge');
+      typeBadge.classList.remove('hidden-badge');
+  };
+
+  venueDropdownButton.addEventListener('click', () => {
+      venueDropdownContent.classList.toggle('open');
+      typeDropdownContent.classList.remove('open');
+      venueBadge.classList.toggle('hidden-badge', !venueDropdownContent.classList.contains('open'));
+      typeBadge.classList.remove('hidden-badge');
+  });
+
+  typeDropdownButton.addEventListener('click', () => {
+      typeDropdownContent.classList.toggle('open');
+      venueDropdownContent.classList.remove('open');
+      typeBadge.classList.toggle('hidden-badge', !typeDropdownContent.classList.contains('open'));
+      venueBadge.classList.remove('hidden-badge');
+  });
+
+  // Attach an event listener to the document to close dropdowns when clicking outside
+  document.addEventListener('click', (event) => {
+      const target = event.target;
+      if (!target.closest('#venue-dropdown-button') && !target.closest('#type-dropdown-button')) {
+          closeDropdowns();
+      }
+  });
+
+    const clearFilters = document.querySelector('.reset-filters-button');
+    clearFilters.addEventListener('click', async() => {
+      const newEvents = await  this.fetchTicketEvents();
+      venueBadge.classList.add('hidden-badge');
+      typeBadge.classList.add('hidden-badge');
+      this.renderEvents(newEvents);
     });
   }
+  static createCheckboxElement(value) {
+    const hr = document.createElement('br');
+    const checkboxLabel = document.createElement('label');
+    checkboxLabel.classList.add('checkbox-label');
   
-  static createOptionElement(value) {
-    const option = document.createElement('option');
-    option.value = value;
-    option.textContent = value;
-    return option;
+    const checkbox = document.createElement('input');
+    checkbox.type = 'checkbox';
+    checkbox.value = value;
+    checkbox.classList.add('checkbox');
+  
+    const labelText = document.createElement('span');
+    labelText.textContent = value;
+  
+    checkboxLabel.appendChild(checkbox);
+    checkboxLabel.appendChild(labelText);
+    checkboxLabel.appendChild(hr);
+  
+    return checkboxLabel;
   }
-  
+  static async updateFiltersAndRender(selectedVenues, selectedTypes) {
+    let newEvents = [];
+    if (selectedTypes.length === 0) {
+        newEvents = await this.filterEventsByVenues(selectedVenues);
+    }else if(selectedVenues.length === 0){
+      newEvents = await this.filterEventsByTypes(selectedTypes);
+    } else if(selectedTypes.length !== 0 && selectedVenues.length !==0) {
+        newEvents = await this.filterEventsByVenuesAndTypes(selectedVenues, selectedTypes);
+    }else{
+      newEvents = await this.fetchTicketEvents();
+    }
+    this.renderEvents(newEvents);
+}
 
+  static async filterEventsByVenues(venues){
+    console.log("filter events by venues: "+ venues);
+ 
+    try {
+      const response = await fetch(`http://localhost:8080/api/events/byVenues/${venues}`);
+      if (!response.ok) {
+          throw new Error('Network response was not ok');
+      }
+      const data = await response.json();
+      return data;
+  } catch (error) {
+      console.error('Error fetching data for filter events by venues:', error);
+      return [];
+  }
+ }
+ static async filterEventsByTypes(types){
+     console.log("filter events by types: "+ types);
+  try {
+    const response = await fetch(`http://localhost:8080/api/events/byTypes/${types}`);
+   
+    if (!response.ok) {
+        throw new Error('Network response was not ok');
+    }
+    const data = await response.json();
+    return data;
+ } catch (error) {
+    console.error('Error fetching data for filter events by types:', error);
+    return [];
+ }
+}
+static async filterEventsByVenuesAndTypes(venues,types){
+  try {
+    console.log("In filter by venues and types");
+    console.log("Selected venues: "+venues);
+    console.log("Selected types: "+ types);
 
-
+    const response = await fetch(`http://localhost:8080/api/events/${venues}/${types}`);
+    
+    if (!response.ok) {
+        throw new Error('Network response was not ok');
+    }
+    const data = await response.json();
+    console.log(data);
+    return data;
+  } catch (error) {
+    console.error('Error fetching data for filter events by venues:', error);
+    return [];
+  }
+}
   static createEvent(event) {
     const title = event; //event.eventType.name
     const eventElement = EventRenderer.createEventElement(event,title);
@@ -92,16 +245,23 @@ export class EventRenderer {
     const addToCartButtonClasses = useStyle(`addToCartBtn`);
     let img;
   
-    if(event.eventName === 'Untold') {
+    if(event.eventName === 'UNTOLD') {
       img = `./src/assets/untold.jpg`;
     } else if(event.eventName === 'Electric Castle') {
       img = `./src/assets/ecc.jpeg`;
     } else if(event.eventName === 'Saga') {
       img = `./src/assets/start.jpg`;
+    }else if(event.eventName === 'Tomorrowland'){
+      img = `./src/assets/tom.jpg`;
+    }else if(event.eventName === 'Catalin Bordea'){
+      img = `./src/assets/bordea.jpg`;
+    }else if(event.eventName == 'The Weeknd Concert'){
+      img = `./src/assets/weeknd.jpg`;
     } else {
       // Default image or handle other cases
-      img = `./src/assets/default.jpg`;
+      img = `./src/assets/o.jpg`;
     }
+
   
     eventDiv.classList.add(...eventWrapperClasses);
   
@@ -110,21 +270,25 @@ export class EventRenderer {
     <div class="content">
       <div class="relative">
         <img src="${img}" class="event-image w-full height-200 rounded opacity-90 shadow-xl"/>
-          <div class="absolute bottom-0 left-0 right-0 px-4 py-2 bg-gray-800 opacity-80 items-center">
-              <h3 class="text-xl text-white font-bold">
-              ${eventName}</h3>
-                 <p class="mt-2 text-sm text-gray-300">
+          <div class="absolute bottom-0 left-0 right-0 px-4 py-2 bg-gray-800 opacity-80">
+              <h4 class="text-xl text-white font-bold">
+              ${eventName}</h4>
+                 <h6 class="mt-2 text-sm text-gray-300">
                     ${ ticketCategories.map((category) => 
-                      `${category.description} - ${category.price}$ <br>
+                      `${category.description}-${category.price}€
                     `)}
-                    
-                  </p> 
+                  </h6>  
           </div>
       </div>
   
       <!--   <img src="${img}" alt="${eventName}" class="event-image w-full height-200 rounded">  -->
+      <br>
+      <hr>
         <p class="description text-grey-700">${eventDescription}</p>  
+      <hr>
+        
     </div>
+    
   `;
     eventDiv.innerHTML = contentMarkup;
     const actions = document.createElement('div');
@@ -268,7 +432,6 @@ export class EventRenderer {
   static async fetchTicketEvents() {
     try {
       const response = await fetch('http://localhost:8080/api/events');
-      console.log('response', response);
       if (!response.ok) {
           throw new Error('Network response was not ok');
       }
@@ -279,5 +442,4 @@ export class EventRenderer {
       return [];
   }
   }
-
 }
